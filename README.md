@@ -19,3 +19,8 @@ npm run build
 ```
 npm run lint
 ```
+
+### Run server to connect to Mongo
+```
+npm run server
+```

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const database = require('./database');
 
 const app = express();
 
@@ -16,6 +17,8 @@ app.get('/posts', (request, response)=> {
 });
 
 app.post('/post', (request, response)=> {
-    console.log('body: ', request.body);
+    // console.log('body: ', request.body);
+    const post = new database.PostStatus(request.body);
+    post.save(error => console.error(error));
     response.sendStatus(200);
 });
