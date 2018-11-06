@@ -43,6 +43,8 @@ import Status from './Status';
 import Intro from './Intro';
 import getHash from './../../models/gethash.js';
 import Contents from './Contents';
+import httpUtils from '../../server/httpopts';
+import Post from '../../models/post';
 
 export default {
     name: 'Main',
@@ -82,6 +84,16 @@ export default {
         go() {
 
         }
+    },
+    async created() {
+        const statuses = await httpUtils.ajax('http://localhost:12345/posts');
+        this.statuses = statuses.map(post => new Post({
+            title: post.title, 
+            body: post.body,
+            round: post.round,
+            date: post.date, 
+            id: post.id
+        }));
     }
 }
 </script>

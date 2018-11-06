@@ -12,5 +12,6 @@ export default {
         {
             body: JSON.stringify(body)
         }
-    )
+    ),
+    ajax: async (url, options={}) => (await fetch(url, options)).json()
 }

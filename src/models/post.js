@@ -3,7 +3,7 @@ export default class Post {
         this.title = title;
         this.body = body;
         this.round = round;
-        this.date = date;
+        this.date = date instanceof Date ? date : new Date(date);
         this.id = id;
     }
 }
