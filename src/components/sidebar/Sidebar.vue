@@ -1,10 +1,10 @@
 <template>
     <div>
-        <RoundPost
+        <round-post
             @add-new-round="addNewRound"
             class="component-padding"
         />
-        <Round
+        <round-component
             class="component-padding"
             v-for="round in rounds"
             :key="round.id"
@@ -20,33 +20,40 @@
 
 
 <script>
-import Round from './Round';
+import RoundComponent from './Round';
 import RoundPost from './RoundPost';
 import getHash from './../../models/gethash.js';
+import httpUtils from '../../server/httpUtils';
+import Round from './../../models/round.js';
 
 export default {
     name: 'Sidebar',
     components: {
-        Round,
+        RoundComponent,
         RoundPost
     },
     data() {
         return {
             hashBin: new Set(),
             rounds: [],
-            selectedID: null
+            selectedID: null,
+            setSubmitOptions: null,
         }
     },
     methods: {
         addNewRound() {
             let id = getHash(this.hashBin);
             this.selectedID = id;
-            this.rounds.unshift({
+            const round = new Round({
                 num: this.rounds.length + 1,
                 date: new Date(),
                 selected: true,
                 id: id
             });
+            let options = this.setSubmitOptions(round);
+            let url = httpUtils.setURIString({ params: ['newround']});
+            fetch(url, options);
+            this.rounds.unshift(round);
             this.$emit('round-created', this.rounds.length);
         },
         roundSelected(id) {
@@ -60,6 +67,28 @@ export default {
         getRoundNum() {
             return this.rounds.length;
         }
+    },
+    async created() {
+        this.setSubmitOptions = httpUtils.createHeader({
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST'
+        });
+
+        let rounds = sessionStorage.getItem('rounds');
+        if(!rounds) {
+            let uri = httpUtils.setURIString({ params: ['rounds'] });
+            rounds = await httpUtils.ajax(uri);
+            this.rounds = rounds.map(round => new Round({
+                num: round.num,
+                id: round.id,
+                date: round.date,
+                selected: round.selected
+            }));
+        }
+        sessionStorage.setItem('rounds', JSON.stringify(this.rounds));
+        this.$emit('round-created', this.rounds.length);
     }
 }
 </script>

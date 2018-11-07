@@ -5,6 +5,8 @@ export class User {
         this.username = username;
         this.password = hashPassword(password);
         this.github = github;
+        this.posts = null;
+        this.rounds = null;
     }
 
     setName(name) {

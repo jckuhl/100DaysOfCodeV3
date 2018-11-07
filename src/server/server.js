@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const Database = require('./database');
+const MongooseConnect = require('./database');
+const PostStatus = require('./models/post.model');
+const RoundModel = require('./models/round.model');
 
 const app = express();
 
@@ -11,7 +13,7 @@ app.use(bodyParser.json())
 const port = 12345;
 
 app.listen(port, ()=> {
-    Database.MongooseConnect();
+    MongooseConnect();
     console.log(`listening on port ${port}\n`)
 });
 
@@ -20,8 +22,10 @@ const handleError = (error, response, status=404) => {
     response.sendStatus(status);
 }
 
+/** POSTS API */
+
 app.get('/posts', (request, response)=> {
-    Database.PostStatus.find((error, posts)=> {
+    PostStatus.find((error, posts)=> {
         if(error) {
             handleError(error, response)
         } else {
@@ -31,16 +35,18 @@ app.get('/posts', (request, response)=> {
 });
 
 app.post('/post', (request, response)=> {
-    const post = new Database.PostStatus(request.body);
+    const post = new PostStatus(request.body);
     post.save(error => {
-        handleError(error, response);
-        response.sendStatus(404);
+        if(error) {
+            handleError(error, response);
+        } else {
+            response.sendStatus(200);
+        }
     });
-    response.sendStatus(200);
 });
 
 app.delete('/delete/:id', (request, response)=> {
-    Database.PostStatus.deleteOne({ id: request.params.id }, (error)=> {
+    PostStatus.deleteOne({ id: request.params.id }, (error)=> {
         if(error) {
             handleError(error, response)
         } else {
@@ -53,11 +59,34 @@ app.put('/update/:id', (request, response)=> {
     const post = request.body;
     const condition = { id: request.params.id }
     const update = { body: post.body, title: post.title }
-    Database.PostStatus.updateOne(condition, update, (error)=> {
+    PostStatus.updateOne(condition, update, (error)=> {
         if(error) {
             handleError(error, response)
         } else {
             response.sendStatus(200);
         }
     });
-})
+});
+
+/** ROUNDS API */
+
+app.get('/rounds', (request, response)=> {
+    RoundModel.find((error, rounds)=> {
+        if(error) {
+            handleError(error);
+        } else {
+            response.send(rounds);
+        }
+    });
+});
+
+app.post('/newround', (request, response)=> {
+    const round = new RoundModel(request.body);
+    round.save(error => {
+        if(error) {
+            handleError(error);
+        } else {
+            response.sendStatus(200);
+        }
+    });
+});

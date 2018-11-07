@@ -7,7 +7,12 @@ const uri = `mongodb+srv://${user}:${pw}@cluster0-vji0s.mongodb.net/100days?test
 // wrap the connection in a closure so I can export it with the URI
 function Connect(uri) {
     return function() {
-        mongoose.connect(uri);
+        mongoose.connect(uri, {
+            auth: {
+                user: user,
+                password: pw
+            }
+        });
 
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'connection error'));
@@ -19,23 +24,4 @@ function Connect(uri) {
 
 const MongooseConnect = Connect(uri);
 
-const postSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
-    },
-    body: {
-        type: String,
-        required: true
-    },
-    round: Number,
-    date: Date,
-    id: String
-});
-
-const PostStatus = mongoose.model('Post', postSchema);
-
-module.exports = {
-    MongooseConnect,
-    PostStatus
-}
+module.exports = MongooseConnect;

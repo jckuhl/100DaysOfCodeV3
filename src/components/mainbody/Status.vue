@@ -9,12 +9,14 @@
         <button @click="editPost" v-if="!editable">Edit</button>
         <button v-else @click="saveEdit">Save</button>
         <button @click="deletePost">Delete</button>
+        
     </p>
   </div>
 </template>
 
 
 <script>
+import Tweet from './Tweet';
 import format from '../../../node_modules/date-fns/format';
 import hljs from '../../../node_modules/highlight.js';
 import Post from './../../models/post.js';
@@ -22,6 +24,9 @@ import httpUtils from '../../server/httpUtils';
 
 export default {
     name: 'Status',
+    components: {
+        Tweet
+    },
     props: {
         status: Post
     },
