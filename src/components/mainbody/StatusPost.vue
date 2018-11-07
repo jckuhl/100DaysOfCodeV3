@@ -35,7 +35,7 @@ import MarkdownHelp from './MarkdownHelp';
 import differenceInDays from '../../../node_modules/date-fns/difference_in_days';
 import addDays from '../../../node_modules/date-fns/add_days';
 import Post from './../../models/post.js';
-import httpUtils from './../../server/httpopts.js';
+import httpUtils from './../../server/httpUtils.js';
 
 export default {
     name: 'StatusPost',
@@ -84,9 +84,6 @@ export default {
             this.$emit('new-post', post);
             const options = this.setSubmitOptions(post);
             fetch('http://localhost:12345/post', options);
-            this.reset();
-        },
-        reset() {
             this.title = '';
             this.body = '';
         },

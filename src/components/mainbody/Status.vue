@@ -18,6 +18,7 @@
 import format from '../../../node_modules/date-fns/format';
 import hljs from '../../../node_modules/highlight.js';
 import Post from './../../models/post.js';
+import httpUtils from '../../server/httpUtils';
 
 export default {
     name: 'Status',
@@ -29,6 +30,7 @@ export default {
             date: this.status.date,
             editable: false,
             editString: '',
+            setUpdateOpts: null
         }
     },
     computed: {
@@ -41,6 +43,7 @@ export default {
                     if (lang && hljs.getLanguage(lang)) {
                         try {
                             return hljs.highlight(lang, str).value;
+                        // eslint-disable-next-line
                         } catch (__) {}
                     }
                     return ''; // use external default escaping
@@ -60,8 +63,19 @@ export default {
         saveEdit() {
             this.editable = false;
             this.status.body = this.editString;
+            let options = this.setUpdateOpts(this.status);
+            let url = httpUtils.setURIString({ params: ['update', this.status.id]});
+            fetch(url, options);
         }
     },
+    created() {
+        this.setUpdateOpts = httpUtils.createHeader({
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            method: 'PUT'
+        })
+    }
 }
 
 </script>

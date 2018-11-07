@@ -1,4 +1,6 @@
 export default {
+    BASE_URI: 'http://localhost',
+    PORT: 12345,
     /**
      * Functional method.
      * Takes an options object of HTTP options that will be commonly used for http calls in functions/components
@@ -13,5 +15,12 @@ export default {
             body: JSON.stringify(body)
         }
     ),
-    ajax: async (url, options={}) => (await fetch(url, options)).json()
+    ajax: async (url, options={}) => (await fetch(url, options)).json(),
+    setURIString({ base = this.BASE_URI, port = this.PORT, params = [] }) {
+        let uriString = `${base}:${port}`;
+        if(params) {
+            params.forEach(param => uriString += `/${param}`);
+        }
+        return uriString;
+    }
 }

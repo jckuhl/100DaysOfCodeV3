@@ -8,25 +8,56 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json())
 
-const port = 12345
+const port = 12345;
 
-app.listen(port, console.log(`listening on port ${port}`))
+app.listen(port, ()=> {
+    Database.MongooseConnect();
+    console.log(`listening on port ${port}\n`)
+});
+
+const handleError = (error, response, status=404) => {
+    console.error(error);
+    response.sendStatus(status);
+}
 
 app.get('/posts', (request, response)=> {
     Database.PostStatus.find((error, posts)=> {
         if(error) {
-            console.error(error);
-            response.sendStatus(404);
+            handleError(error, response)
         } else {
-            console.log(posts);
             response.send(posts);
         }
     })
 });
 
 app.post('/post', (request, response)=> {
-    // console.log('body: ', request.body);
     const post = new Database.PostStatus(request.body);
-    post.save(error => console.error(error));
+    post.save(error => {
+        handleError(error, response);
+        response.sendStatus(404);
+    });
     response.sendStatus(200);
 });
+
+app.delete('/delete/:id', (request, response)=> {
+    Database.PostStatus.deleteOne({ id: request.params.id }, (error)=> {
+        if(error) {
+            handleError(error, response)
+        } else {
+            response.sendStatus(200)
+        }
+    });
+})
+
+app.put('/update/:id', (request, response)=> {
+    const post = request.body;
+    const condition = { id: request.params.id }
+    const update = { body: post.body, title: post.title }
+    Database.PostStatus.updateOne(condition, update, (error)=> {
+        if(error) {
+            handleError(error, response)
+        } else {
+            response.sendStatus(200);
+        }
+    });
+})

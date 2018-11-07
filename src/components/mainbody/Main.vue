@@ -43,7 +43,7 @@ import Status from './Status';
 import Intro from './Intro';
 import getHash from './../../models/gethash.js';
 import Contents from './Contents';
-import httpUtils from '../../server/httpopts';
+import httpUtils from '../../server/httpUtils';
 import Post from '../../models/post';
 
 export default {
@@ -65,7 +65,7 @@ export default {
             statuses: [],
             hashBin: new Set(),
             userName: this.username,
-            settings: window.location.origin + '/settings'
+            settings: window.location.origin + '/settings',
         }
     },
     computed: {
@@ -77,23 +77,31 @@ export default {
         newPost(post) {
             post.id = getHash(this.hashBin);
             this.statuses.unshift(post);
+            sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
         },
         deletePost(event) {
             this.statuses = this.statuses.filter((status) => status.id !== event.id);
+            sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
+            let uri = httpUtils.setURIString({ params: [ 'delete', event.id]});
+            fetch(uri, { method: 'DELETE'});
         },
         go() {
 
         }
     },
     async created() {
-        const statuses = await httpUtils.ajax('http://localhost:12345/posts');
-        this.statuses = statuses.map(post => new Post({
-            title: post.title, 
-            body: post.body,
-            round: post.round,
-            date: post.date, 
-            id: post.id
-        }));
+        let statuses = sessionStorage.getItem('statuses');
+        if(!statuses) {
+            statuses = await httpUtils.ajax('http://localhost:12345/posts');
+            this.statuses = statuses.map(post => new Post({
+                title: post.title, 
+                body: post.body,
+                round: post.round,
+                date: post.date, 
+                id: post.id
+            }));
+        }
+        sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
     }
 }
 </script>

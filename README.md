@@ -1,5 +1,7 @@
 # 100daysv3
 
+A MEVN stack.  Mongo (Mongoose ORM), Express, Vue and Node.
+
 ## Project setup
 ```
 npm install
