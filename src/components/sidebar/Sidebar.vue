@@ -8,10 +8,8 @@
             class="component-padding"
             v-for="round in rounds"
             :key="round.id"
-            v-bind:roundNum="round.num"
-            v-bind:roundID="round.id"
-            v-bind:roundDate="round.date"
-            v-bind:selectedID="selectedID"
+            :round="round"
+            :selectedID="selectedID"
             @round-selected="roundSelected"
             @set-post-round="setPostRound"
         />
@@ -78,7 +76,7 @@ export default {
         });
 
         let rounds = sessionStorage.getItem('rounds');
-        if(!rounds) {
+        if(!rounds || rounds.length === 0) {
             let uri = httpUtils.setURIString({ params: ['rounds'] });
             rounds = await httpUtils.ajax(uri);
             this.rounds = rounds.map(round => new Round({

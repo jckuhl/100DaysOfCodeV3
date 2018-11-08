@@ -2,7 +2,7 @@
     <div 
         v-bind:class="{isSelected: selected, 'border-bottom': !selected}" 
         @click="selectRound">
-            <h1>Round {{ round }}</h1>
+            <h1>Round {{ round.num }}</h1>
             <p>You started this round on {{ getDate }}</p>
             <p>This round ends on {{ targetDate }}</p>
             <p v-if="daysLeft > 0">You have {{ daysLeft }} days left</p>
@@ -19,16 +19,11 @@ import differenceInDays from '../../../node_modules/date-fns/difference_in_days'
 export default {
     name: 'Round',
     props: {
-        roundNum: Number,
-        roundID: String,
-        roundDate: Date,
+        round: Object,
         selectedID: String
     },
     data() {
         return {
-            round: this.roundNum,
-            date: this.roundDate,
-            id: this.roundID,
             selected: false,
             totalDays: 100
         }
@@ -42,24 +37,24 @@ export default {
     },
     computed: {
         getDate() {
-            return format(this.date, 'MM/DD/YYYY');
+            return format(this.round.date, 'MM/DD/YYYY');
         },
         targetDate() {
-            return format(addDays(this.date, this.totalDays), 'MM/DD/YYYY');
+            return format(addDays(this.round.date, this.totalDays), 'MM/DD/YYYY');
         },
         daysLeft() {
-            return differenceInDays(addDays(this.date, this.totalDays), new Date());
+            return differenceInDays(addDays(this.round.date, this.totalDays), new Date());
         }
     },
     methods: {
         sendRoundAndDate() {
             this.selected = this.selectedID === this.id;
             if(this.selected) {
-                this.$emit('set-post-round', this.round, this.date);
+                this.$emit('set-post-round', this.round.num, this.round.date);
             }
         },
         selectRound() {
-            this.$emit("round-selected", this.id);
+            this.$emit("round-selected", this.round.id);
         }
     },
     mounted: function() {
