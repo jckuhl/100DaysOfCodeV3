@@ -1,5 +1,6 @@
+/** Utility functions for connecting to Express server that acts as go between with Mongo */
 export default {
-    BASE_URI: 'http://localhost',
+    BASE_URI: 'http://localhost',   // TODO: redirect to whatever service I deploy to.
     PORT: 12345,
     /**
      * Functional method.
@@ -15,12 +16,45 @@ export default {
             body: JSON.stringify(body)
         }
     ),
-    ajax: async (url, options={}) => (await fetch(url, options)).json(),
-    setURIString({ base = this.BASE_URI, port = this.PORT, params = [] }) {
-        let uriString = `${base}:${port}`;
+
+    /**
+     * Simple AJAX for fetching
+     * @param {String} url url to hit
+     * @param {Object} options defaults to empty, this function is best for GET anyways
+     * @returns {Promise}
+     */
+    async ajax(url, options={}) { 
+        return (await fetch(url, options)).json(); 
+    },
+
+    /**
+     * Builds a URI string, defaulting to BASE_URI:PORT (http://localhost:{port})
+     * If on local host, base uri will be forced to local host
+     * Params is the list of path names in the uri
+     * Query is an object of key/value pair objects
+     * @param {Object} params  base uri, port, params
+     * @returns {String} uriString
+     */
+    setURIString({ base = this.BASE_URI, port = this.PORT, params = null, query = null, frag = null }={}) {
+        let uriString = `${base}`;
+        if(port) {
+			uriString += `:${port}`;
+		}
         if(params) {
             params.forEach(param => uriString += `/${param}`);
         }
+        if(query) {
+            uriString += '?';
+            Object.entries(query).forEach(([k,v], i, entries)=> {
+                uriString += `${k}=${v}`;
+                if(i != entries.length - 1) {
+                    uriString += '&'
+                }
+            });
+        }
+        if(frag) {
+            uriString += `#${frag}`
+        }
         return uriString;
-    }
+}
 }

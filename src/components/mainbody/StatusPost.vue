@@ -83,7 +83,8 @@ export default {
             });
             this.$emit('new-post', post);
             const options = this.setSubmitOptions(post);
-            fetch('http://localhost:12345/post', options);
+            let url = httpUtils.setURIString({ params: ['post']});
+            fetch(url, options);
             this.title = '';
             this.body = '';
         },

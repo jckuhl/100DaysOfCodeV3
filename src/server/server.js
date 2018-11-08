@@ -12,11 +12,13 @@ app.use(bodyParser.json())
 
 const port = 12345;
 
+// start server and connect to Mongo via Mongoose
 app.listen(port, ()=> {
     MongooseConnect();
     console.log(`listening on port ${port}\n`)
 });
 
+// generic error handle, defaults to 404
 const handleError = (error, response, status=404) => {
     console.error(error);
     response.sendStatus(status);

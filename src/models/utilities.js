@@ -1,5 +1,6 @@
 import randomNum from './random';
 
+/** Utility functions of miscellaneous use, anything that was needed twice or more */
 export default {
 
     /**
@@ -28,6 +29,23 @@ export default {
         const hashBin = new Set();
         objects.forEach(object => hashBin.add(object.id));
         return hashBin;
-    }
+    },
 
+    /**
+     * Checks whether an object pulled out of sessionStorage or localStorage exists
+     * @param {Object} object 
+     * @returns {Boolean} true if it's invalid
+     */
+    isNotValidSessionObject(object) {
+        return !object || object.length < 0 || !object.length[0]
+    },
+
+    /**
+     * A call back for a sort method, to sort items by date
+     * @param {Object} A Object with a date property
+     * @param {Object} B Object with a date property
+     */
+    byDate(A, B) {
+        B.date.valueOf() - A.date.valueOf()
+    }
 }

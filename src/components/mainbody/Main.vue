@@ -88,19 +88,23 @@ export default {
         }
     },
     async created() {
-        let statuses = sessionStorage.getItem('statuses');
-        if(!statuses || statuses.length < 0 || !statuses.length[0]) {
-            statuses = await httpUtils.ajax('http://localhost:12345/posts');
-            this.statuses = statuses.map(post => new Post({
+        const populatePosts = post => new Post({
                 title: post.title, 
                 body: post.body,
                 round: post.round,
                 date: post.date, 
                 id: post.id
-            }));
+            });
+
+        const { isNotValidSessionObject, byDate } = Utilities;
+
+        let statuses = sessionStorage.getItem('statuses');
+        if(isNotValidSessionObject(statuses)) {
+            let url = httpUtils.setURIString({ params: ['posts']});
+            statuses = await httpUtils.ajax(url);
+            this.statuses = statuses.map(populatePosts).sort(byDate);
         }
         sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
-        this.hashBin = Utilities.hashBinPopulator(this.statuses);
     }
 }
 </script>

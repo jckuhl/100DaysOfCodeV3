@@ -68,6 +68,15 @@ export default {
         }
     },
     async created() {
+        // create a Round object from object literal
+        const populateRounds = round => new Round({
+                num: round.num,
+                id: round.id,
+                date: round.date,
+                selected: round.selected
+        });
+
+        // set the default options for submitting a round to the server
         this.setSubmitOptions = httpUtils.createHeader({
             headers: {
                 'Content-Type': 'application/json'
@@ -75,16 +84,14 @@ export default {
             method: 'POST'
         });
 
+        const { isNotValidSessionObject, byDate } = Utilities;
+
+        // check if rounds are in session storage, if not fetch from server, then store in storage.
         let rounds = sessionStorage.getItem('rounds');
-        if(!rounds || rounds.length < 0 || !rounds.length[0]) {
+        if(isNotValidSessionObject(rounds)) {
             let uri = httpUtils.setURIString({ params: ['rounds'] });
             rounds = await httpUtils.ajax(uri);
-            this.rounds = rounds.map(round => new Round({
-                num: round.num,
-                id: round.id,
-                date: round.date,
-                selected: round.selected
-            }));
+            this.rounds = rounds.map(populateRounds).sort(byDate);
         }
         sessionStorage.setItem('rounds', JSON.stringify(this.rounds));
         this.$emit('round-created', this.rounds.length);
