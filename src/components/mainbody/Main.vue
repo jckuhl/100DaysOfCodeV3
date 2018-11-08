@@ -30,8 +30,7 @@
             <Contents
                 v-for="status in statuses"
                 :key="status.id"
-                :contentTitle="status.title"
-                :contentDate="status.date"
+                :status="status"
             />
         </div>
     </div>
@@ -41,7 +40,7 @@
 import StatusPost from './StatusPost';
 import Status from './Status';
 import Intro from './Intro';
-import getHash from './../../models/gethash.js';
+import Utilities from './../../models/utilities.js';
 import Contents from './Contents';
 import httpUtils from '../../server/httpUtils';
 import Post from '../../models/post';
@@ -64,6 +63,7 @@ export default {
         return {
             statuses: [],
             hashBin: new Set(),
+            populateHashes: null,
             userName: this.username,
             settings: window.location.origin + '/settings',
         }
@@ -75,7 +75,7 @@ export default {
     },
     methods: {
         newPost(post) {
-            post.id = getHash(this.hashBin);
+            post.id = Utilities.getHash(this.hashBin);
             this.statuses.unshift(post);
             sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
         },
@@ -102,6 +102,7 @@ export default {
             }));
         }
         sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
+        this.hashBin = Utilities.hashBinPopulator(this.statuses);
     }
 }
 </script>

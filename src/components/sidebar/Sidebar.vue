@@ -25,6 +25,7 @@ import RoundPost from './RoundPost';
 import getHash from './../../models/gethash.js';
 import httpUtils from '../../server/httpUtils';
 import Round from './../../models/round.js';
+import Utilities from '../../models/utilities';
 
 export default {
     name: 'Sidebar',
@@ -89,6 +90,7 @@ export default {
         }
         sessionStorage.setItem('rounds', JSON.stringify(this.rounds));
         this.$emit('round-created', this.rounds.length);
+        this.hashBin = Utilities.hashBinPopulator(this.rounds);
     }
 }
 </script>

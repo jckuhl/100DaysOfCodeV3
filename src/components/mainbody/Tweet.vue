@@ -13,12 +13,12 @@ export default {
     },
     data() {
         return {
-            twitURL: 'https://twitter.com/intent/tweet?text='
+            twitURL: 'https://twitter.com/intent/tweet?text=',
         }
     },
     computed: {
         twitURLComposed() {
-            return `${this.twitURL}${this.body}`;
+            return `${this.twitURL}${this.body}&hashtags=100DaysOfCode`;
         }
     }
 }

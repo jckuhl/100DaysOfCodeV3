@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const user = process.env.MONGO_USER;
 const pw = process.env.MONGO_PW;
-const uri = `mongodb+srv://${user}:${pw}@cluster0-vji0s.mongodb.net/100days?test?retryWrites=true`;
+const uri = `mongodb+srv://${user}:${pw}@cluster0-vji0s.mongodb.net/100days?retryWrites=true`;
 
 // wrap the connection in a closure so I can export it with the URI
 function Connect(uri) {
@@ -11,7 +11,8 @@ function Connect(uri) {
             auth: {
                 user: user,
                 password: pw
-            }
+            },
+            useNewUrlParser: true
         });
 
         const db = mongoose.connection;

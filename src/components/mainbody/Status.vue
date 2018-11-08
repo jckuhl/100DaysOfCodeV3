@@ -1,5 +1,5 @@
 <template>
-  <div class="border-bottom border-right">
+  <div class="border-bottom border-right" :id="status.id">
     <h2 v-if="!editable">{{ status.title }}</h2>
     <input v-else type="text" v-model="status.title">
     <h3>{{ formattedDate }}</h3>
@@ -9,7 +9,8 @@
         <button @click="editPost" v-if="!editable">Edit</button>
         <button v-else @click="saveEdit">Save</button>
         <button @click="deletePost">Delete</button>
-        
+        <button v-if="editable" @click="cancelEdit">Cancel</button>
+        <tweet :body="status.body" />
     </p>
   </div>
 </template>
@@ -65,12 +66,22 @@ export default {
             this.editable = true;
             this.editString = this.status.body;
         },
+        cancelEdit() {
+            this.editable = false;
+            this.editString = '';
+        },
         saveEdit() {
             this.editable = false;
-            this.status.body = this.editString;
-            let options = this.setUpdateOpts(this.status);
-            let url = httpUtils.setURIString({ params: ['update', this.status.id]});
-            fetch(url, options);
+
+            // only submit a new post if changes were made.
+            if(this.status.body !== this.editString) {
+                this.status.body = this.editString;
+                let options = this.setUpdateOpts(this.status);
+                let url = httpUtils.setURIString({ params: ['update', this.status.id]});
+                fetch(url, options);
+            } 
+
+            this.editString = '';
         }
     },
     created() {
