@@ -8,16 +8,14 @@
                 v-bind:selectedRound="selectedRound"
                 v-bind:selectedRoundDate="selectedRoundDate"
             />
-            <Intro
-                class="component-padding"
-                v-bind:username="userName"
+            <Intro class="component-padding"
+                :username="userName"
                 v-else
             />
-            <Status
+            <Status v-for="status in statuses"
                 class="component-padding"
-                v-for="status in statuses"
                 :key="status.id"
-                v-bind:status="status"
+                :status="status"
                 @delete-post="deletePost($event)"
             />
         </div>
@@ -91,7 +89,7 @@ export default {
     },
     async created() {
         let statuses = sessionStorage.getItem('statuses');
-        if(!statuses) {
+        if(!statuses || statuses.length < 0 || !statuses.length[0]) {
             statuses = await httpUtils.ajax('http://localhost:12345/posts');
             this.statuses = statuses.map(post => new Post({
                 title: post.title, 

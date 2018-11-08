@@ -13,7 +13,7 @@ export default {
     },
     computed: {
         formattedDate() {
-            return format(new Date(status.date), 'MM/DD/YYYY');
+            return format(this.status.date, 'MM/DD/YYYY');
         }
     },
     methods: {

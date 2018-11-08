@@ -76,7 +76,7 @@ export default {
         });
 
         let rounds = sessionStorage.getItem('rounds');
-        if(!rounds || rounds.length === 0) {
+        if(!rounds || rounds.length < 0 || !rounds.length[0]) {
             let uri = httpUtils.setURIString({ params: ['rounds'] });
             rounds = await httpUtils.ajax(uri);
             this.rounds = rounds.map(round => new Round({
