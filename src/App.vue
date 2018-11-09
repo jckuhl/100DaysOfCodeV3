@@ -73,7 +73,12 @@ button:hover {
 }
 
 button:disabled {
-  background: lightgray;
+    background: lightgray;
+}
+
+/* for divs that contain only paragraph text */
+.text-container {
+    padding: 1rem;
 }
 
 </style>

@@ -1,4 +1,9 @@
-export class User {
+// TODO: Implement an actual hash
+function hashPassword(pw) {
+    return pw;
+}
+
+export default class User {
     constructor({ name, email, username, password, github }) {
         this.name = name;
         this.email = email;

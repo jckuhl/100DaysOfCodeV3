@@ -45,7 +45,12 @@ export default {
      * @param {Object} A Object with a date property
      * @param {Object} B Object with a date property
      */
-    byDate(A, B) {
-        B.date.valueOf() - A.date.valueOf()
+    By: {
+        DateDesc(A, B) {
+            B.date.valueOf() - A.date.valueOf()
+        },
+        DateAsc(A, B) {
+            A.date.valueOf() - B.date.valueOf()
+        }
     }
 }

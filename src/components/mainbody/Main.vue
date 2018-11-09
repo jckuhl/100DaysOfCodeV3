@@ -20,10 +20,7 @@
             />
         </div>
         <div class="content-list">
-            <h4>Review Settings</h4>
-            <ul>
-                <li><router-link to="settings">Settings</router-link></li>
-            </ul>
+            <h4>Current Stats</h4>
             <h4 v-if="statuses.length !== 0">Contents:</h4>
             <Contents
                 v-for="status in statuses"
@@ -42,6 +39,8 @@ import Utilities from './../../models/utilities.js';
 import Contents from './Contents';
 import httpUtils from '../../server/httpUtils';
 import Post from '../../models/post';
+
+const { getHash, By, isNotValidSessionObject } = Utilities;
 
 export default {
     name: 'Main',
@@ -73,7 +72,7 @@ export default {
     },
     methods: {
         newPost(post) {
-            post.id = Utilities.getHash(this.hashBin);
+            post.id = getHash(this.hashBin);
             this.statuses.unshift(post);
             sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
         },
@@ -96,13 +95,13 @@ export default {
                 id: post.id
             });
 
-        const { isNotValidSessionObject, byDate } = Utilities;
+        // const  = Utilities;
 
         let statuses = sessionStorage.getItem('statuses');
         if(isNotValidSessionObject(statuses)) {
             let url = httpUtils.setURIString({ params: ['posts']});
             statuses = await httpUtils.ajax(url);
-            this.statuses = statuses.map(populatePosts).sort(byDate);
+            this.statuses = statuses.map(populatePosts).sort(By.DateDesc);
         }
         sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
     }

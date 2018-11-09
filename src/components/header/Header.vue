@@ -1,7 +1,12 @@
 <template>
     <header>
         <h1><a href="http://www.100daysofcode.com/" target="_blank">#100 Days of Code</a></h1>
-        <h2>Welcome {{ userName }}</h2>
+        <div>
+            <h2><router-link to="/blog">Log</router-link></h2>
+            <h2><router-link to="/about">About</router-link></h2>
+            <h2><router-link to="/settings">Settings</router-link></h2>
+            <h2>Welcome {{ userName }}</h2>
+        </div>
     </header>
 </template>
 
@@ -47,5 +52,9 @@ export default {
 
     a:visited, a:link, a:focus {
         color: aliceblue;
+    }
+
+    div {
+        display: inline-flex;
     }
 </style>

@@ -6,6 +6,9 @@ import router from './router/router';
 
 Vue.config.productionTip = false
 
+Vue.filter('title', (value)=> {
+    return value.substring(0,1).toUpperCase() + value.substring(1);
+})
 
 /* eslint-disable no-new */
 new Vue({

@@ -20,10 +20,12 @@
 <script>
 import RoundComponent from './Round';
 import RoundPost from './RoundPost';
-import getHash from './../../models/gethash.js';
 import httpUtils from '../../server/httpUtils';
 import Round from './../../models/round.js';
 import Utilities from '../../models/utilities';
+
+
+const { getHash, By, isNotValidSessionObject } = Utilities;
 
 export default {
     name: 'Sidebar',
@@ -84,14 +86,12 @@ export default {
             method: 'POST'
         });
 
-        const { isNotValidSessionObject, byDate } = Utilities;
-
         // check if rounds are in session storage, if not fetch from server, then store in storage.
         let rounds = sessionStorage.getItem('rounds');
         if(isNotValidSessionObject(rounds)) {
             let uri = httpUtils.setURIString({ params: ['rounds'] });
             rounds = await httpUtils.ajax(uri);
-            this.rounds = rounds.map(populateRounds).sort(byDate);
+            this.rounds = rounds.map(populateRounds).sort(By.DateDesc);
         }
         sessionStorage.setItem('rounds', JSON.stringify(this.rounds));
         this.$emit('round-created', this.rounds.length);
