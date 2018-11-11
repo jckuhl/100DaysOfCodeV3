@@ -1,10 +1,12 @@
 <template>
-    <div class="modal-bg" @click.self="close">
+    <div class="modal-bg" @click.self="close" ref="modal-bg">
         <div class="modal">
-            <h3>{{ modal.title }} <span @click="close">&times;</span></h3>
+            <h3>{{ modal.title }} <span @click="close"><small>Close</small> &times;</span></h3>
             <p>{{ modal.message }}</p>
-            <button @click="action1">{{ modal.btnAction1 }}</button>
-            <button @click="action2">{{ modal.btnAction2 }}</button>
+            <div class="right">
+                <button @click="action1">{{ modal.btnAction1 }}</button>
+                <button @click="action2">{{ modal.btnAction2 }}</button>
+            </div>
         </div>
     </div>
 </template>
@@ -39,6 +41,7 @@ export default {
     },
     mounted() {
         document.querySelector('body').classList.add('stop-scrolling');
+        this.$refs['modal-bg'].style.top = window.scrollY + 'px';
     }
 }
 </script>
@@ -66,12 +69,29 @@ export default {
     padding: 1rem;
     border-radius: 10px;
     border: 3px solid black;
-    background: #c7effc
+    background: #c7effc;
+    cursor: auto;
 }
 
 .stop-scrolling {
-    height: 100%;
+    width: 105%;
+    height: 105%;
     overflow: hidden;
+}
+
+h3 {
+    display: flex;
+    justify-content: space-between;
+    text-decoration: underline;
+}
+
+span {
+    cursor: pointer;
+}
+
+.right {
+    width: 100%;
+    text-align: right;
 }
 </style>
 
