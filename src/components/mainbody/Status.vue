@@ -60,7 +60,7 @@ export default {
     },
     methods: {
         deletePost() {
-            this.$emit('delete-post', this.status);
+            this.$emit('confirm-delete', this.status);
         },
         editPost() {
             this.editable = true;

@@ -3,12 +3,13 @@
 import Vue from 'vue';
 import App from './App';
 import router from './router/router';
+import store from './store/store';
 
 Vue.config.productionTip = false
 
 Vue.filter('title', (value)=> {
     return value.substring(0,1).toUpperCase() + value.substring(1);
-})
+});
 
 /* eslint-disable no-new */
 new Vue({
@@ -17,6 +18,7 @@ new Vue({
         App
     },
     router,
+    store,
     template: '<App/>',
     render (h) { return h(App) }
 });

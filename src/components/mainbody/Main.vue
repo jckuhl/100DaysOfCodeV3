@@ -5,8 +5,8 @@
                 v-if="roundsExist"
                 @new-post="newPost"
                 class="component-padding"
-                v-bind:selectedRound="selectedRound"
-                v-bind:selectedRoundDate="selectedRoundDate"
+                :selectedRound="selectedRound"
+                :selectedRoundDate="selectedRoundDate"
             />
             <Intro class="component-padding"
                 :username="userName"
@@ -16,7 +16,7 @@
                 class="component-padding"
                 :key="status.id"
                 :status="status"
-                @delete-post="deletePost($event)"
+                @confirm-delete="confirmDelete($event)"
             />
         </div>
         <div class="content-list">
@@ -28,6 +28,8 @@
                 :status="status"
             />
         </div>
+        <modal :modal="modal" v-if="modalOpen" @close-modal="closeModal" 
+                @delete-post="deletePost($event)"/>
     </div>
 </template>
 
@@ -35,6 +37,7 @@
 import StatusPost from './StatusPost';
 import Status from './Status';
 import Intro from './Intro';
+import Modal from './../modal/Modal';
 import Utilities from './../../models/utilities.js';
 import Contents from './Contents';
 import httpUtils from '../../server/httpUtils';
@@ -54,7 +57,8 @@ export default {
         StatusPost,
         Status,
         Intro,
-        Contents
+        Contents,
+        Modal
     },
     data() {
         return {
@@ -62,7 +66,22 @@ export default {
             hashBin: new Set(),
             populateHashes: null,
             userName: this.username,
-            settings: window.location.origin + '/settings',
+            modal: {
+                title: 'Confirm Delete',
+                message: 
+                    'This will delete the post from memory and cannot be done.  Are you sure you want to do this?',
+                btnAction1: 'Cancel',
+                btnAction2: 'Okay',
+                action1: function() {
+                    this.$emit('close-modal');
+                },
+                action2: function(args) {
+                    console.log('data: ',this.modal.data.deleteId);
+                    this.$emit('delete-post', this.modal.data.deleteId);
+                },
+                data: {}
+            },
+            modalOpen: false,
         }
     },
     computed: {
@@ -76,14 +95,19 @@ export default {
             this.statuses.unshift(post);
             sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
         },
-        deletePost(event) {
-            this.statuses = this.statuses.filter((status) => status.id !== event.id);
+        deletePost(id) {
+            this.statuses = this.statuses.filter((status) => status.id !== id);
             sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
-            let uri = httpUtils.setURIString({ params: [ 'delete', event.id]});
+            let uri = httpUtils.setURIString({ params: [ 'delete', id]});
             fetch(uri, { method: 'DELETE'});
+            this.modalOpen = false;
         },
-        go() {
-
+        closeModal() {
+            this.modalOpen = false;
+        },
+        confirmDelete(event) {
+            this.modalOpen = true;
+            this.modal.data.deleteId = event.id;
         }
     },
     async created() {

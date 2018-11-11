@@ -10,8 +10,8 @@
             <label for="body">Description:</label>
             <small class="falseLink" @click="showHelp" >Markdown Formatting</small>
             <MarkdownHelp
-                v-bind:posX="posX"
-                v-bind:posY="posY"
+                :posX="posX"
+                :posY="posY"
                 @close-md="hideHelp"
                 v-if="markdownOpen"
             />

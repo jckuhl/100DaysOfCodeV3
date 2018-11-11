@@ -52,5 +52,14 @@ export default {
         DateAsc(A, B) {
             A.date.valueOf() - B.date.valueOf()
         }
+    },
+
+    isEmpty(object) {
+        for(let key in object) {
+            if(object.hasOwnProperty(key)) {
+                return false
+            }
+        }
+        return true;
     }
 }

@@ -7,20 +7,32 @@
         </p>
         <button @click="save">Save</button>
         <button>Cancel</button>
+        <modal :modal="modal" v-if="modalOpen"/>
     </div>
 </template>
 
 <script>
+import Modal from './components/modal/Modal';
 import User from './models/user.js';
 import httpUtils from './server/httpUtils.js';
 
 export default {
     name: 'Settings',
+    components: {
+        Modal
+    },
     data() {
         return {
             user: {},
             editUser: {},
-            updates: []
+            modal: {
+                title: 'Account Deactivation',
+                message:  'This will permanently delete your account and all of your posts.'
+                    + 'This cannot be undone.  Are you sure you want to do this?',
+                btnAction1: 'Yes',
+                btnAction2: 'No'
+            },
+            modalOpen: false
         }
     },
     methods: {
@@ -28,9 +40,9 @@ export default {
             this.editUser[field] = value;
         },
         save() {
-            const user = Object.assign({}, this.user, this.editUser);
-            let url = httpUtils.setURIString({ params: this.updates.concat(this.editUser.id)});
-            console.log(user);
+            let updatedUser = Object.assign(this.user, this.editUser);
+            let url = httpUtils.setURIString({ params: [this.user.id]});
+            console.log(updatedUser);
         }
     },
     created() {
@@ -39,7 +51,7 @@ export default {
             username: 'bubbagump123',
             password: '1234',
             email: 'deededee@deedee.net',
-            github: null
+            github: 'something.git'
         });
 
         // make a copy
