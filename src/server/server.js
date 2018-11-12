@@ -5,6 +5,7 @@ const MongooseConnect = require('./database');
 const PostStatus = require('./models/post.model');
 const RoundModel = require('./models/round.model');
 const ResourceModel = require('./models/resource.model');
+const tweetStatus = require('./twitter');
 
 const app = express();
 
@@ -125,4 +126,11 @@ app.delete('/deleteresource/:id', (request, response)=> {
             response.sendStatus(200);
         }
     });
+});
+
+/** TWEETS */
+app.post('/tweet', (request, response)=> {
+    tweetStatus(request.body.body)
+        .then(status => response.send(JSON.stringify({status})))
+        .catch(error => response.send(JSON.stringify({status: error})));
 });

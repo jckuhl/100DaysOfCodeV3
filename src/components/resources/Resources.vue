@@ -90,7 +90,10 @@ export default {
         deleteResource(id) {
             this.resources = this.resources.filter(resource => resource.id !== id);
             let url = httpUtils.setURIString({ params: ['deleteresource', id]});
-            fetch(url, { method: 'DELETE'});
+            fetch(url, { method: 'DELETE'})
+                .then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error(error));
         }
     },
     async created() {
@@ -100,12 +103,8 @@ export default {
             blurb: resource.blurb,
             id: resource.id
         });
-        this.setPostOptions = httpUtils.createHeader({
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'POST'
-        });
+
+        // grab the resources from either session storage or mongo
         let resources = sessionStorage.getItem('resources');
         if(isNotValidSessionObject(resources)) {
             let url = httpUtils.setURIString({ params: ['resources']});
@@ -113,6 +112,14 @@ export default {
             this.resources = resources.map(populateResources);
         }
         sessionStorage.setItem('resources', JSON.stringify(this.resources));
+
+        // set up setPostOptions
+        this.setPostOptions = httpUtils.createHeader({
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            method: 'POST'
+        });
     }
 }
 </script>

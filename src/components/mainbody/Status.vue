@@ -10,8 +10,9 @@
         <button v-else @click="saveEdit">Save</button>
         <button @click="deletePost">Delete</button>
         <button v-if="editable" @click="cancelEdit">Cancel</button>
-        <tweet :body="status.body" />
+        <button @click="tweetStatus">Tweet</button>
     </p>
+    <p v-if="actionStatus">{{ actionStatus }}</p>
   </div>
 </template>
 
@@ -36,7 +37,8 @@ export default {
             date: this.status.date,
             editable: false,
             editString: '',
-            setUpdateOpts: null
+            setUpdateOpts: null,
+            actionStatus: ''
         }
     },
     computed: {
@@ -82,6 +84,26 @@ export default {
             } 
 
             this.editString = '';
+        },
+        tweetStatus() {
+            let options = {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                method: 'POST',
+                body: JSON.stringify(this.status)
+            }
+            let url = httpUtils.setURIString({ params: ['tweet'] });
+            fetch(url, options)
+                .then(data => data.json())
+                .then(twitter => {
+                    if(twitter.status === true) {
+                        this.actionStatus = 'Tweet successful!';
+                    } else {
+                        this.actionStatus = twitter.status;
+                    }
+                })
+                .catch(error => console.error(error));
         }
     },
     created() {
@@ -90,7 +112,7 @@ export default {
                 'Content-Type': 'application/json',
             },
             method: 'PUT'
-        })
+        });
     }
 }
 
