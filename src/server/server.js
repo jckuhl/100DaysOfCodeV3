@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const MongooseConnect = require('./database');
 const PostStatus = require('./models/post.model');
 const RoundModel = require('./models/round.model');
+const ResourceModel = require('./models/resource.model');
 
 const app = express();
 
@@ -85,6 +86,39 @@ app.get('/rounds', (request, response)=> {
 app.post('/newround', (request, response)=> {
     const round = new RoundModel(request.body);
     round.save(error => {
+        if(error) {
+            handleError(error);
+        } else {
+            response.sendStatus(200);
+        }
+    });
+});
+
+/** RESOURCES API */
+
+app.get('/resources', (request, response)=> {
+    ResourceModel.find((error, resources)=> {
+        if(error) {
+            handleError(error);
+        } else {
+            response.send(resources);
+        }
+    });
+})
+
+app.post('/newresource', (request, response)=> {
+    const resource = new ResourceModel(request.body);
+    resource.save(error => {
+        if(error) {
+            handleError(error);
+        } else {
+            response.sendStatus(200);
+        }
+    })
+});
+
+app.delete('/deleteresource/:id', (request, response)=> {
+    ResourceModel.deleteOne({ id: request.params.id }, error => {
         if(error) {
             handleError(error);
         } else {

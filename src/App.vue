@@ -79,7 +79,7 @@ button:disabled {
 
 /* for divs that contain only paragraph text */
 .text-container {
-    padding: 1rem;
+    padding: 1rem 3rem;
 }
 
 </style>

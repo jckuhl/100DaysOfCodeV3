@@ -4,6 +4,7 @@ import Login from './../components/login/Login.vue';
 import Container from './../components/Container.vue';
 import Settings from './../Settings.vue';
 import About from './../About';
+import Resources from './../components/resources/Resources.vue';
 
 Vue.use(VueRouter);
 
@@ -29,6 +30,11 @@ export default new VueRouter({
             path: '/about',
             name: 'about',
             component: About
+        },
+        {
+            path: '/resources',
+            name: 'resources',
+            component: Resources
         }
     ]
 });

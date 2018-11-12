@@ -7,6 +7,8 @@
         </p>
         <button @click="save">Save</button>
         <button>Cancel</button>
+        <p>If you would like to delete your account you may do so by clicking the button below.  Be warned, this action is non reversable and all your data will be lost.</p>
+        <button>Deactivate Account</button>
         <modal :modal="modal" v-if="modalOpen"/>
     </div>
 </template>

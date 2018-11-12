@@ -4,8 +4,9 @@
         <div>
             <h2><router-link to="/blog">Log</router-link></h2>
             <h2><router-link to="/about">About</router-link></h2>
+            <h2><router-link to="/resources">Resources</router-link></h2>
             <h2><router-link to="/settings">Settings</router-link></h2>
-            <h2>Welcome {{ userName }}</h2>
+            <h2><router-link to="/logout">Log Out</router-link></h2>
         </div>
     </header>
 </template>
