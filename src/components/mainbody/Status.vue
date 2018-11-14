@@ -23,6 +23,7 @@ import format from '../../../node_modules/date-fns/format';
 import hljs from '../../../node_modules/highlight.js';
 import Post from './../../models/post.js';
 import httpUtils from '../../server/httpUtils';
+import 'highlight.js/styles/github.css'
 
 export default {
     name: 'Status',
@@ -41,6 +42,11 @@ export default {
             actionStatus: ''
         }
     },
+    watched: {
+        formattedBody() {
+            console.log('hi');
+        }
+    },
     computed: {
         formattedDate() {
             return format(this.date, 'MM/DD/YYYY HH:mm');
@@ -52,12 +58,14 @@ export default {
                         try {
                             return hljs.highlight(lang, str).value;
                         // eslint-disable-next-line
-                        } catch (__) {}
+                        } catch (error) {
+                            console.error(error);
+                        }
                     }
                     return ''; // use external default escaping
                 }
             });
-            return md.render(this.status.body)
+            return md.render(this.status.body);
         }
     },
     methods: {
@@ -128,4 +136,3 @@ export default {
         background-color: lightgrey;
     }
 </style>
-

@@ -76,7 +76,6 @@ export default {
                     this.$emit('close-modal');
                 },
                 action2: function(args) {
-                    console.log('data: ',this.modal.data.deleteId);
                     this.$emit('delete-post', this.modal.data.deleteId);
                 },
                 data: {}
