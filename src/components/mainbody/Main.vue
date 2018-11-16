@@ -125,7 +125,8 @@ export default {
             // TODO: Modify uri string to include user id
             let url = httpUtils.setURIString({ params: ['posts']});
             statuses = await httpUtils.ajax(url);
-            this.statuses = statuses.map(populatePosts).sort(By.DateDesc);
+            this.statuses = statuses.map(populatePosts)
+                                    .sort(By.DateDesc);
         }
         sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
         let ids = this.statuses.map(status => status.id);

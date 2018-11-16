@@ -5,6 +5,7 @@ const MongooseConnect = require('./database');
 const PostStatus = require('./models/post.model');
 const RoundModel = require('./models/round.model');
 const ResourceModel = require('./models/resource.model');
+const UserModel = require('./models/user.model');
 const tweetStatus = require('./twitter');
 
 const app = express();
@@ -133,4 +134,16 @@ app.post('/tweet', (request, response)=> {
     tweetStatus(request.body.body)
         .then(status => response.send(JSON.stringify({status})))
         .catch(error => response.send(JSON.stringify({status: error})));
+});
+
+/** Register */
+app.post('/register', (request, response)=> {
+    const user = new UserModel(request.body);
+    user.save(error => {
+        if(error) {
+            handleError(error);
+        } else {
+            response.sendStatus(200);
+        }
+    });
 });

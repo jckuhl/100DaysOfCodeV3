@@ -19,12 +19,6 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    passwordConf: {
-        type: String,
-        trim: true,
-        required: true,
-        unique: true
-    },
     email: {
         type: String,
         trim: true,
@@ -33,12 +27,12 @@ const UserSchema = new mongoose.Schema({
     }
 });
 
-UserSchema.pre('save', (next)=> {
-    bcrypt.hash(this.password, 10, (error)=> {
+UserSchema.pre('save', function(next) {
+    bcrypt.hash(this.password, 10, (error, hash)=> {
         if(error) {
             return next(error);
         }
-        user.password = hash;
+        this.password = hash;
         next();
     });
 });

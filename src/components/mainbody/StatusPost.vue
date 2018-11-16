@@ -82,7 +82,6 @@ export default {
             });
             this.$emit('new-post', post);
             const options = httpUtils.setHTTPOptions({ method: 'POST', body: post});
-            console.log(options);
             const url = httpUtils.setURIString({ params: ['post']});
             fetch(url, options);
             this.title = '';

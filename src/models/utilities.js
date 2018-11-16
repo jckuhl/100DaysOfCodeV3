@@ -47,10 +47,10 @@ export default {
      */
     By: {
         DateDesc(A, B) {
-            B.date.valueOf() - A.date.valueOf()
+            return B.date.valueOf() - A.date.valueOf()
         },
         DateAsc(A, B) {
-            A.date.valueOf() - B.date.valueOf()
+            return A.date.valueOf() - B.date.valueOf()
         }
     },
 

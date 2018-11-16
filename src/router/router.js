@@ -8,7 +8,7 @@ import Resources from './../components/resources/Resources.vue';
 
 Vue.use(VueRouter);
 
-export default new VueRouter({
+const router = new VueRouter({
     routes: [
         {
             path: '/',
@@ -38,3 +38,16 @@ export default new VueRouter({
         }
     ]
 });
+
+router.beforeEach((to, from, next)=> {
+    if(to.name !== 'login') {
+        //TODO: Authentication
+        //! FOR NOW JUST GO
+        next();
+    } else {
+        // if we're going to log in who cares if we're logged in?
+        next();
+    }
+})
+
+export default router;

@@ -23,8 +23,21 @@
                     name="username"
                     id="username"
                     autocomplete="username"
-                    placeholder="Username or Email"
+                    placeholder="Username"
                     v-model="inputUser.username"
+                    :class="{ danger: userNameFailed }"
+                    required
+                />
+            </p>
+            <p>
+                <label for="email">Email:</label>
+                <input
+                    type="text"
+                    name="email"
+                    id="email"
+                    autocomplete="email"
+                    placeholder="Email"
+                    v-model="inputUser.email"
                     :class="{ danger: userNameFailed }"
                     required
                 />
@@ -136,12 +149,13 @@ export default {
         },
         register(event) {
             event.preventDefault();
-            const newUser = new User({
+            const newUser = {
                 name: this.inputUser.name,
                 email: this.inputUser.email,
+                username: this.inputUser.username,
                 password: this.inputUser.password,
-                email: this.inputUser.email,
-            });
+                confirmPassword: this.inputUser.confirmPassword
+            };
             const options = httpUtils.setHTTPOptions({ method: 'POST', body: newUser});
             const url = httpUtils.setURIString({ params: ['register']});
             fetch(url, options);
