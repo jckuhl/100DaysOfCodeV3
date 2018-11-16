@@ -56,8 +56,7 @@ export default {
             markdownOpen: false,
             top: "500px",
             left: "100px",
-            height: 0,
-            setSubmitOptions: null
+            height: 0
         }
     },
     watch: {
@@ -82,8 +81,9 @@ export default {
                 date: new Date(),
             });
             this.$emit('new-post', post);
-            const options = this.setSubmitOptions(post);
-            let url = httpUtils.setURIString({ params: ['post']});
+            const options = httpUtils.setHTTPOptions({ method: 'POST', body: post});
+            console.log(options);
+            const url = httpUtils.setURIString({ params: ['post']});
             fetch(url, options);
             this.title = '';
             this.body = '';
@@ -96,15 +96,6 @@ export default {
         hideHelp() {
             this.markdownOpen = false;
         }
-    },
-    created() {
-        // create the closure that creates fetch options object
-        this.setSubmitOptions = httpUtils.createHeader({
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                method: 'POST',
-        });
     }
 }
 </script>

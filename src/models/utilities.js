@@ -61,5 +61,35 @@ export default {
             }
         }
         return true;
+    },
+
+    /**
+     * Resets all non-method properties of an object to empty string
+     * Useful for clearing forms
+     * @param {Object} object 
+     * @returns {Object} object with all values set to empty string
+     */
+    clearObject(object) {
+        const result = {};
+    
+        Object.entries(object).forEach(([key, value])=> {
+            if(typeof value !== 'function') {
+                Object.defineProperty(result, key, {
+                    value: '',
+                    writable: true,
+                    enumerable: true,
+                    configurable: true
+                });
+            } else {
+                Object.defineProperty(result, key, {
+                    value,
+                    writable: true,
+                    enumerable: true,
+                    configurable: true
+                });
+            }
+        });
+    
+        return result;
     }
 }

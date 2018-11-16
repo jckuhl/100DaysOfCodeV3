@@ -2,7 +2,7 @@
     <div class="login">
         <h1 class="center">Welcome!</h1>
         <p class="center">Please log in with your username and password!</p>
-        <form @submit="login">
+        <form>
             <p>Don't have an account? Click <a href="javascript:;" @click="changeMode">here</a> to register!</p>
             <h3 v-if="mode==='register'">Register</h3>
             <h3 v-else>Login</h3>
@@ -54,7 +54,18 @@
             <p>
                 <small><a href="#">Forgot username or password?</a></small>
             </p>
-            <button type="submit" class="center" :disabled="!inputUser.username || !inputUser.password">Log In</button>
+            <button v-if="mode==='login'"
+                @click="login"
+                class="center" 
+                :disabled="!inputUser.username || !inputUser.password">
+                Log In
+            </button>
+            <button v-else
+                @click="register"
+                class="center" 
+                :disabled="!inputUser.username || !inputUser.password">
+                Register
+            </button>
             <p v-if="error.message">{{ error.status }}: {{ errorMessage }}</p>
         </form>
         <p class="center">Or log in with Github!</p>
@@ -66,6 +77,8 @@
 
 <script>
 import httpUtils from '../../server/httpUtils';
+import User from './../../models/user.js';
+import Utilities from './../../models/utilities.js';
 
 export default {
     name: 'Login',
@@ -104,9 +117,10 @@ export default {
         async login(event) {
             event.preventDefault();
             //  TODO: draw from Mongo to get user name and password and see if they match the input
-            let url = httpUtils.setURIString({ params: ['login']})
+            const options = httpUtils.setHTTPOptions({ method: 'POST', body: inputUser});
+            const url = httpUtils.setURIString({ params: ['login']})
             try {
-                const user = await fetch(url).then(response => {
+                const user = await fetch(url, options).then(response => {
                     if(response.ok) {
 
                     } else {
@@ -122,6 +136,16 @@ export default {
         },
         register(event) {
             event.preventDefault();
+            const newUser = new User({
+                name: this.inputUser.name,
+                email: this.inputUser.email,
+                password: this.inputUser.password,
+                email: this.inputUser.email,
+            });
+            const options = httpUtils.setHTTPOptions({ method: 'POST', body: newUser});
+            const url = httpUtils.setURIString({ params: ['register']});
+            fetch(url, options);
+            this.inputUser = Utilities.clearObject(this.inputUser);
         },
         changeMode() {
             this.mode = this.mode === 'register' ? 'login' : 'register';

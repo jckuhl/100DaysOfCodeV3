@@ -97,7 +97,7 @@ export default {
         deletePost(id) {
             this.statuses = this.statuses.filter((status) => status.id !== id);
             sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
-            let uri = httpUtils.setURIString({ params: [ 'delete', id]});
+            let uri = httpUtils.setURIString({ params: [ 'delete', id ]});
             fetch(uri, { method: 'DELETE'});
             this.modalOpen = false;
         },
@@ -122,11 +122,14 @@ export default {
 
         let statuses = sessionStorage.getItem('statuses');
         if(isNotValidSessionObject(statuses)) {
+            // TODO: Modify uri string to include user id
             let url = httpUtils.setURIString({ params: ['posts']});
             statuses = await httpUtils.ajax(url);
             this.statuses = statuses.map(populatePosts).sort(By.DateDesc);
         }
         sessionStorage.setItem('statuses', JSON.stringify(this.statuses));
+        let ids = this.statuses.map(status => status.id);
+        this.hashBin = new Set(ids);
     }
 }
 </script>

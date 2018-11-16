@@ -37,8 +37,7 @@ export default {
         return {
             hashBin: new Set(),
             rounds: [],
-            selectedID: null,
-            setSubmitOptions: null,
+            selectedID: null
         }
     },
     methods: {
@@ -51,7 +50,7 @@ export default {
                 selected: true,
                 id: id
             });
-            let options = this.setSubmitOptions(round);
+            let options = httpUtils.setHTTPOptions({ method: 'POST', body: round });
             let url = httpUtils.setURIString({ params: ['newround']});
             fetch(url, options);
             this.rounds.unshift(round);
@@ -76,14 +75,6 @@ export default {
                 id: round.id,
                 date: round.date,
                 selected: round.selected
-        });
-
-        // set the default options for submitting a round to the server
-        this.setSubmitOptions = httpUtils.createHeader({
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            method: 'POST'
         });
 
         // check if rounds are in session storage, if not fetch from server, then store in storage.

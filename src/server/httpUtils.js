@@ -4,6 +4,7 @@ export default {
     PORT: 12345,
     /**
      * Functional method.
+     * ? Why do I need a closure for this?  setHTTPOptions is a simple method below this one
      * Takes an options object of HTTP options that will be commonly used for http calls in functions/components
      * Returns a function that will then assign the body parameter of the options object to be passed to fetch()
      * @param {object} options HTTP options for a fetch() instruction
@@ -18,6 +19,22 @@ export default {
     ),
 
     /**
+     * Constructs an options object for fetch.
+     * @param {Object} options Sets the HTTP request configuration for fetch.  
+     * Defaults to GET and {'Content-Type': 'application/json'}
+     * @returns {Object} options
+     */
+    setHTTPOptions({ body,
+                    method={ method: 'GET'},
+                    headers={'Content-Type': 'application/json'}
+                }) {
+        return {
+            method,
+            headers,
+            body: JSON.stringify(body)
+        }
+    },
+    /**
      * Simple AJAX for fetching
      * @param {String} url url to hit
      * @param {Object} options defaults to empty, this function is best for GET anyways
@@ -29,7 +46,6 @@ export default {
 
     /**
      * Builds a URI string, defaulting to BASE_URI:PORT (http://localhost:{port})
-     * If on local host, base uri will be forced to local host
      * Params is the list of path names in the uri
      * Query is an object of key/value pair objects
      * @param {Object} params  base uri, port, params
@@ -56,5 +72,5 @@ export default {
             uriString += `#${frag}`
         }
         return uriString;
-}
+    }
 }

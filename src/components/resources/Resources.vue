@@ -54,7 +54,7 @@ export default {
             resources: [],
             freecodecamp: {
                 title: 'Free Code Camp',
-                blurb: 'Free Code Camp info',
+                blurb: 'Free Code Camp provides curriculum for learning both front and back end web technologies.  They begin with HTML, CSS and JavaScript and before you know it, you\'re programming in React!',
                 url: 'https://freecodecamp.org'
             },
             modal: {
