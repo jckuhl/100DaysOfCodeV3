@@ -54,11 +54,6 @@ export default {
             addingNewComment: false
         }
     },
-    watched: {
-        formattedBody() {
-            console.log('hi');
-        }
-    },
     computed: {
         formattedDate() {
             return format(this.date, 'MM/DD/YYYY HH:mm');
@@ -142,6 +137,7 @@ export default {
             let url = httpUtils.setURIString({ params: ['update', this.status.id]});
             fetch(url, options);
             this.newComment = '';
+            this.addingNewComment = false;
         }
     },
     created() {

@@ -78,7 +78,7 @@ export default {
                 title: this.title,
                 body: this.body,
                 round: this.round,
-                date: new Date(),
+                date: new Date()
             });
             this.$emit('new-post', post);
             const options = httpUtils.setHTTPOptions({ method: 'POST', body: post});

@@ -1,6 +1,6 @@
 <template>
     <div>
-        {{ comment.message }}
+        {{comment.author}} said {{ comment.message }}
         <p>{{ comment.likes }}
             <button>Like</button>
             <button>Reply</button>

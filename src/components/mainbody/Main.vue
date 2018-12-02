@@ -42,6 +42,7 @@ import Utilities from './../../models/utilities.js';
 import Contents from './Contents';
 import httpUtils from '../../server/httpUtils';
 import Post from '../../models/post';
+import Comment from '../../models/comment.js';
 
 const { getHash, By, isNotValidSessionObject } = Utilities;
 
@@ -110,15 +111,32 @@ export default {
         }
     },
     async created() {
-        const populatePosts = post => new Post({
+        const populatePosts = post => {
+            // Vue expects every status to conform to a Post object
+            const newPost = new Post({
                 title: post.title, 
                 body: post.body,
                 round: post.round,
                 date: post.date, 
-                id: post.id
+                id: post.id,
             });
 
-        // const  = Utilities;
+            // if there are comments, turn them into Comment objects to satisfy Vue expectations
+            // also to allow use of the reply method
+            if(post.comments.length > 0) {
+                const comments = post.comments.map(comment => {
+                    if(comment) {
+                        return new Comment({
+                            message: comment.message,
+                            author: comment.author,
+                            date: comment.date
+                        })
+                    }
+                })
+                newPost.comments = newPost.comments.concat(comments);
+            }
+            return newPost;
+        }
 
         let statuses = sessionStorage.getItem('statuses');
         if(isNotValidSessionObject(statuses)) {
