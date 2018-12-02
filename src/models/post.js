@@ -6,5 +6,17 @@ export default class Post {
         this.date = date instanceof Date ? date : new Date(date);
         this.id = id;
         this.user = user;
+        this.comments = [];
+        this.likes = 0;
+    }
+
+    /**
+     * Adds a comment object to a post.
+     *
+     * @param {Comment} comment
+     * @memberof Post
+     */
+    newComment(comment) {
+        this.comments.push(comment);
     }
 }

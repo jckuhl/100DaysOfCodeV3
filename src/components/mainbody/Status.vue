@@ -13,12 +13,21 @@
         <button @click="tweetStatus">Tweet</button>
     </p>
     <p v-if="actionStatus">{{ actionStatus }}</p>
+    <comment-comp v-for="(comment, index) of status.comments" :key="index" :comment="comment" />
+    <button v-if="!addingNewComment" @click="addNewComment">Add Comment</button>
+    <div v-else>
+        <input type="text" v-model="newComment">
+        <button @click="saveComment">Save</button>
+        <button @click="cancelComment">Cancel</button>
+    </div>
   </div>
 </template>
 
 
 <script>
 import Tweet from './Tweet';
+import CommentComp from './CommentComp';
+import Comment from './../../models/comment.js';
 import format from '../../../node_modules/date-fns/format';
 import hljs from '../../../node_modules/highlight.js';
 import Post from './../../models/post.js';
@@ -28,7 +37,8 @@ import 'highlight.js/styles/github.css'
 export default {
     name: 'Status',
     components: {
-        Tweet
+        Tweet,
+        CommentComp
     },
     props: {
         status: Post
@@ -39,7 +49,9 @@ export default {
             editable: false,
             editString: '',
             setUpdateOpts: null,
-            actionStatus: ''
+            actionStatus: '',
+            newComment: '',
+            addingNewComment: false
         }
     },
     watched: {
@@ -112,6 +124,24 @@ export default {
                     }
                 })
                 .catch(error => console.error(error));
+        },
+        addNewComment() {
+            this.addingNewComment = true;
+        },
+        cancelComment() {
+            this.newComment = '';
+            this.addingNewComment = false;
+        },
+        saveComment() {
+            this.status.newComment(new Comment({
+                message: this.newComment,
+                author: 'unknown',
+                date: new Date()
+            }));
+            let options = this.setUpdateOpts(this.status);
+            let url = httpUtils.setURIString({ params: ['update', this.status.id]});
+            fetch(url, options);
+            this.newComment = '';
         }
     },
     created() {

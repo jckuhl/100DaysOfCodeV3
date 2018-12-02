@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+
 const MongooseConnect = require('./database');
 const PostStatus = require('./models/post.model');
 const RoundModel = require('./models/round.model');
@@ -10,6 +12,11 @@ const tweetStatus = require('./twitter');
 
 const app = express();
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: true,
+  saveUninitialized: false
+}));
 app.use(cors());
 app.use(bodyParser.json())
 
@@ -63,7 +70,7 @@ app.delete('/delete/:id', (request, response)=> {
 app.put('/update/:id', (request, response)=> {
     const post = request.body;
     const condition = { id: request.params.id }
-    const update = { body: post.body, title: post.title }
+    const update = { body: post.body, title: post.title, comments: post.comments }
     PostStatus.updateOne(condition, update, (error)=> {
         if(error) {
             handleError(error, response)
