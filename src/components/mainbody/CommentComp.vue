@@ -2,9 +2,10 @@
     <div>
         {{comment.author}} said {{ comment.message }}
         <p>{{ comment.likes }}
-            <button>Like</button>
-            <button>Reply</button>
-            <button>Delete</button>
+            <button @click="like">Like</button>
+            <input type="text" v-model="newReply">
+            <button @click="reply" :disabled="newReply===''">Reply</button>
+            <button @click="deleteComment">Delete</button>
         </p>
         <p v-for="(reply, index) of comment.replies" :key="index">
             {{ reply }}
@@ -20,5 +21,25 @@ export default {
     props: {
         comment: Comment
     },
+    data() {
+        return {
+            newReply: ''
+        }
+    },
+    methods: {
+        like() {
+            // TODO: replace null with the current user
+            this.comment.like(null);
+            this.$emit('save', this.comment.id);
+        },
+        reply() {
+            this.comment.addReply(this.newReply);
+            this.newReply = '';
+            this.$emit('save', this.comment.id);
+        },
+        deleteComment() {
+            this.$emit('delete-comment', this.comment.id);
+        }
+    }
 }
 </script>

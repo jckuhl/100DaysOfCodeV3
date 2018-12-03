@@ -14,7 +14,8 @@ const postSchema = new mongoose.Schema({
         author: String,
         date: Date,
         likes: Number,
-        replies: [ { comment: String } ]
+        id: String,
+        replies: [ String ]
     }],
     likes: Number,
     round: Number,

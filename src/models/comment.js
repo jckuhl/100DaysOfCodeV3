@@ -1,5 +1,6 @@
 export default class Comment {
-    constructor({ message, author, date }) {
+    constructor({ id, message, author, date }) {
+        this.id = id;
         this.message = message;
         this.author = author;
         this.date = date;
@@ -14,10 +15,14 @@ export default class Comment {
      * @memberof Comment
      */
     addReply(comment) {
+        if(comment === '') {
+            return;
+        }
         this.replies.push(comment);
     }
 
     like(user) {
+        // TODO: user can only like once, or remove his like.
         this.likes += 1;
     }
 }

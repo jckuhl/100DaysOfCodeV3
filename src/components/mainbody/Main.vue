@@ -129,7 +129,8 @@ export default {
                         return new Comment({
                             message: comment.message,
                             author: comment.author,
-                            date: comment.date
+                            date: comment.date,
+                            id: comment.id
                         })
                     }
                 })

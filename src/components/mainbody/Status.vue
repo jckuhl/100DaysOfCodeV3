@@ -13,7 +13,13 @@
         <button @click="tweetStatus">Tweet</button>
     </p>
     <p v-if="actionStatus">{{ actionStatus }}</p>
-    <comment-comp v-for="(comment, index) of status.comments" :key="index" :comment="comment" />
+    <comment-comp 
+        v-for="(comment, index) of status.comments" 
+        :key="index" 
+        :comment="comment" 
+        @save="save($event)" 
+        @delete-comment="deleteComment($event)"
+    />
     <button v-if="!addingNewComment" @click="addNewComment">Add Comment</button>
     <div v-else>
         <input type="text" v-model="newComment">
@@ -32,7 +38,10 @@ import format from '../../../node_modules/date-fns/format';
 import hljs from '../../../node_modules/highlight.js';
 import Post from './../../models/post.js';
 import httpUtils from '../../server/httpUtils';
+import Utilities from '../../models/utilities.js';
 import 'highlight.js/styles/github.css'
+
+const { getHash } = Utilities;
 
 export default {
     name: 'Status',
@@ -51,7 +60,8 @@ export default {
             setUpdateOpts: null,
             actionStatus: '',
             newComment: '',
-            addingNewComment: false
+            addingNewComment: false,
+            commentIds: null
         }
     },
     computed: {
@@ -131,13 +141,23 @@ export default {
             this.status.newComment(new Comment({
                 message: this.newComment,
                 author: 'unknown',
-                date: new Date()
+                date: new Date(),
+                id: getHash(this.commentIds)
             }));
             let options = this.setUpdateOpts(this.status);
             let url = httpUtils.setURIString({ params: ['update', this.status.id]});
             fetch(url, options);
             this.newComment = '';
             this.addingNewComment = false;
+        },
+        save() {
+            let options = this.setUpdateOpts(this.status);
+            let url = httpUtils.setURIString({ params: ['update', this.status.id]});
+            fetch(url, options);
+        },
+        deleteComment(id) {
+            this.status.comments = this.status.comments.filter(comment=> comment.id !== id);
+            this.save()
         }
     },
     created() {
@@ -147,6 +167,10 @@ export default {
             },
             method: 'PUT'
         });
+
+        // create a set of ids to uniquely identify comments by
+        let ids = this.status.comments.map(comment => comment.id);
+        this.commentIds = new Set(ids);
     }
 }
 
