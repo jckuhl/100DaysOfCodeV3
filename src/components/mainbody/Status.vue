@@ -17,8 +17,9 @@
         v-for="(comment, index) of status.comments" 
         :key="index" 
         :comment="comment" 
-        @save="save($event)" 
+        @save="save" 
         @delete-comment="deleteComment($event)"
+        @like="like($event)"
     />
     <button v-if="!addingNewComment" @click="addNewComment">Add Comment</button>
     <div v-else>
@@ -46,7 +47,7 @@ const { getHash } = Utilities;
 export default {
     name: 'Status',
     components: {
-        Tweet,
+        Tweet,  // TODO: Remove unused Tweet compononent
         CommentComp
     },
     props: {
@@ -68,6 +69,8 @@ export default {
         formattedDate() {
             return format(this.date, 'MM/DD/YYYY HH:mm');
         },
+
+        // enables Markdown formmatting and syntax highlighting.
         formattedBody() {
             const md = require('markdown-it')({
                 highlight: function(str, lang) {
@@ -86,17 +89,24 @@ export default {
         }
     },
     methods: {
+        // emit a confirm-delete event so parent (<Main/>) can delete the post
         deletePost() {
             this.$emit('confirm-delete', this.status);
         },
+
+        // enables editing the post
         editPost() {
             this.editable = true;
             this.editString = this.status.body;
         },
+
+        // cancels the edit without making changes
         cancelEdit() {
             this.editable = false;
             this.editString = '';
         },
+
+        // sends the updated post to the appropriate PUT endpoint
         saveEdit() {
             this.editable = false;
 
@@ -110,7 +120,11 @@ export default {
 
             this.editString = '';
         },
+
+        // shares a tweet's-length worth of the post on the user's twitter
+        // tweet endpoint will modify the post to fit a tweet with a #100DaysOfCode hashtag
         tweetStatus() {
+            // TODO: Authorize and use user's twitter, not my own
             let options = {
                 headers: {
                     'Content-Type': 'application/json'
@@ -130,13 +144,19 @@ export default {
                 })
                 .catch(error => console.error(error));
         },
+
+        // enables the user to add a new comment
         addNewComment() {
             this.addingNewComment = true;
         },
+
+        // cancels the comment without making any changes
         cancelComment() {
             this.newComment = '';
             this.addingNewComment = false;
         },
+
+        // adds a new comment and updates it on the database
         saveComment() {
             this.status.newComment(new Comment({
                 message: this.newComment,
@@ -144,23 +164,26 @@ export default {
                 date: new Date(),
                 id: getHash(this.commentIds)
             }));
-            let options = this.setUpdateOpts(this.status);
-            let url = httpUtils.setURIString({ params: ['update', this.status.id]});
-            fetch(url, options);
+            this.save();
             this.newComment = '';
             this.addingNewComment = false;
         },
+
+        // updates the status on the database using PUT
         save() {
             let options = this.setUpdateOpts(this.status);
             let url = httpUtils.setURIString({ params: ['update', this.status.id]});
             fetch(url, options);
         },
+
+        // deletes a comment and updates the database
         deleteComment(id) {
             this.status.comments = this.status.comments.filter(comment=> comment.id !== id);
             this.save()
         }
     },
     created() {
+        // TODO: remove this closure
         this.setUpdateOpts = httpUtils.createHeader({
             headers: {
                 'Content-Type': 'application/json',

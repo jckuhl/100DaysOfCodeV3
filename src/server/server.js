@@ -1,8 +1,10 @@
+// Express and plugins:
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 
+// Mongoose and models
 const MongooseConnect = require('./database');
 const PostStatus = require('./models/post.model');
 const RoundModel = require('./models/round.model');
@@ -10,14 +12,19 @@ const ResourceModel = require('./models/resource.model');
 const UserModel = require('./models/user.model');
 const tweetStatus = require('./twitter');
 
+// start the express app
 const app = express();
 
+// remove X-Powered-By header setting
+app.disable('X-Powered-By');
+
+// use sessions
 app.use(session({
   secret: process.env.SESSION_SECRET,
   resave: true,
   saveUninitialized: false
 }));
-app.use(cors());
+app.use(cors());    // TODO: Configure for security before final release
 app.use(bodyParser.json())
 
 const port = 12345;

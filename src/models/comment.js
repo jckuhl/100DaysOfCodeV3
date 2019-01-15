@@ -21,6 +21,8 @@ export default class Comment {
         this.replies.push(comment);
     }
 
+    // JFC ES LINT, DO YOU UNDERSTAND WHAT TODO MEANS?
+    // eslint-disable-next-line
     like(user) {
         // TODO: user can only like once, or remove his like.
         this.likes += 1;

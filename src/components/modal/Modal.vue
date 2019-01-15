@@ -1,11 +1,11 @@
 <template>
     <div class="modal-bg" @click.self="close" ref="modal-bg">
         <div class="modal">
-            <h3>{{ modal.title }} <span @click="close"><small>Close</small> &times;</span></h3>
-            <p>{{ modal.message }}</p>
+            <h3><slot name="header"></slot> <span @click="close"><small>Close</small> &times;</span></h3>
+            <p><slot name="body"></slot></p>
             <div class="right">
-                <button @click="action1">{{ modal.btnAction1 }}</button>
-                <button @click="action2">{{ modal.btnAction2 }}</button>
+                <button @click="action1"><slot name="btn1"></slot></button>
+                <button @click="action2"><slot name="btn2"></slot></button>
             </div>
         </div>
     </div>
@@ -16,10 +16,6 @@ export default {
     name: 'Modal',
     props: {
         modal: {
-            title: String,
-            message: String,
-            btnAction1: String,
-            btnAction2: String,
             action1: Function,
             action2: Function,
             data: Object

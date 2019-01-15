@@ -8,6 +8,7 @@ export default class User {
         this.friends = [];
         this.options = {
             sharing: false,
+            comments: true,
             twitter: null,
             github: null
         }

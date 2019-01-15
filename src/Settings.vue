@@ -7,6 +7,16 @@
         </p>
         <button @click="save">Save</button>
         <button>Cancel</button>
+        <h3>Privacy</h3>
+        <p>As a default, this site is a private log for you.  However, you may opt in to share your experience with fellow coders.</p>
+        <p>
+            <input type="checkbox" v-model="user.options.sharing" id="sharing"> 
+            <label for="sharing">Share your experience with other coders!</label>
+        </p>
+        <p>
+            <input type="checkbox" v-model="user.options.comments" id="enable-comments">
+            <label for="enable-comments">Enable comments</label>
+        </p>
         <p>If you would like to delete your account you may do so by clicking the button below.  Be warned, this action is non reversable and all your data will be lost.</p>
         <button>Deactivate Account</button>
         <modal :modal="modal" v-if="modalOpen"/>

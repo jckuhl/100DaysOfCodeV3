@@ -28,8 +28,14 @@
                 :status="status"
             />
         </div>
-        <modal :modal="modal" v-if="modalOpen" @close-modal="closeModal" 
-                @delete-post="deletePost($event)"/>
+        <modal v-if="modalOpen" @close-modal="closeModal" 
+                :modal="modal"
+                @delete-post="deletePost($event)">
+                <span slot="header">Confirm Delete</span>
+                <p slot="body">This will delete the post from memory and cannot be done.  Are you sure you want to do this?</p>
+                <span slot="btn1">Confirm</span>
+                <span slot="btn2">Cancel</span>
+        </modal>
     </div>
 </template>
 
@@ -68,11 +74,6 @@ export default {
             populateHashes: null,
             userName: this.username,
             modal: {
-                title: 'Confirm Delete',
-                message: 
-                    'This will delete the post from memory and cannot be done.  Are you sure you want to do this?',
-                btnAction1: 'Cancel',
-                btnAction2: 'Okay',
                 action1: function() {
                     this.$emit('close-modal');
                 },
